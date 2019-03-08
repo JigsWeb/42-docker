@@ -42,6 +42,14 @@ EXPOSE 443 80 22
 # Define data volumes
 VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
+RUN echo 'external_url "https://192.168.99.100"' >> /etc/gitlab/gitlab.rb; \
+    echo nginx['ssl_certificate'] = \"/etc/gitlab/ssl/192.168.99.100.crt\" >> /etc/gitlab/gitlab.rb; \
+    echo nginx['ssl_certificate_key'] = \"/etc/gitlab/ssl/192.168.99.100.key\" >> /etc/gitlab/gitlab.rb; \
+    mkdir -p /etc/gitlab/ssl;
+
+COPY cert.key /etc/gitlab/ssl/192.168.99.100.key
+COPY cert.crt /etc/gitlab/ssl/192.168.99.100.crt
 COPY wrapper .
+
 RUN chmod 777 ./wrapper
 CMD ["./wrapper"]

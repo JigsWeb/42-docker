@@ -9,6 +9,8 @@ trap "sigterm_handler; exit" TERM
 
 function entrypoint() {
     /opt/gitlab/embedded/bin/runsvdir-start &
+    cp /tmp/cert.pem /etc/gitlab/trusted-certs/cert.pem
+    cp /tmp/key.pem /etc/gitlat/trusted-certs/key.pem
     gitlab-ctl reconfigure # will also start everything
     gitlab-ctl tail # tail all logs
 }
