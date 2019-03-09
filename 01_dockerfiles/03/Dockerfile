@@ -36,16 +36,17 @@ RUN ( \
   mkdir -p /assets/ && \
   cp /etc/gitlab/gitlab.rb /assets/gitlab.rb
 
-# Expose web & ssh
 EXPOSE 443 80 22
 
-# Define data volumes
-VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
+RUN ( \
+    echo 'external_url "https://192.168.99.100"' && \
+    echo 'gitlab_rails['gitlab_shell_ssh_port'] = 4242' && \
+    echo "nginx['redirect_http_to_https'] = true" && \
+    echo "nginx['ssl_certificate'] = '/etc/gitlab/ssl/192.168.99.100.crt'" &&  \
+    echo "nginx['ssl_certificate_key'] = '/etc/gitlab/ssl/192.168.99.100.key'") >> /etc/gitlab/gitlab.rb && \
+    mkdir -p /etc/gitlab/ssl
 
-RUN echo external_url \"https://192.168.99.100\" >> /etc/gitlab/gitlab.rb; \
-    echo nginx['ssl_certificate'] = \"/etc/gitlab/ssl/192.168.99.100.crt\" >> /etc/gitlab/gitlab.rb; \
-    echo nginx['ssl_certificate_key'] = \"/etc/gitlab/ssl/192.168.99.100.key\" >> /etc/gitlab/gitlab.rb; \
-    mkdir -p /etc/gitlab/ssl;
+VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
 COPY cert.key /etc/gitlab/ssl/192.168.99.100.key
 COPY cert.crt /etc/gitlab/ssl/192.168.99.100.crt
