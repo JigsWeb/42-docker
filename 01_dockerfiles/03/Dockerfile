@@ -40,7 +40,7 @@ EXPOSE 443 80 22
 
 RUN ( \
     echo 'external_url "https://192.168.99.100"' && \
-    echo 'gitlab_rails['gitlab_shell_ssh_port'] = 4242' && \
+    echo "gitlab_rails['gitlab_shell_ssh_port'] = 4242" && \
     echo "nginx['redirect_http_to_https'] = true" && \
     echo "nginx['ssl_certificate'] = '/etc/gitlab/ssl/192.168.99.100.crt'" &&  \
     echo "nginx['ssl_certificate_key'] = '/etc/gitlab/ssl/192.168.99.100.key'") >> /etc/gitlab/gitlab.rb && \
